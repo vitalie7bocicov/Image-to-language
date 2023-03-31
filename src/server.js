@@ -6,7 +6,17 @@ const app = express()
 async function post(){
 
     const language = "ro";
-    const labels = await getLabelsFromPhoto("./cat.jfif");
+    // const labels = await getLabelsFromPhoto("./cat.jfif");
+    const labels = [
+        'Cat',
+        'Felidae',
+        'Whiskers',
+        'Terrestrial animal',
+        'Close-up',
+        'Fur',
+        'Domestic short-haired cat'
+    ];
+
     console.log(labels);
 
 }
