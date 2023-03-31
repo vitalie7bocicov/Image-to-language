@@ -1,6 +1,7 @@
 const express = require('express')
 const getLabelsFromPhoto = require("./API/visionApi");
 const translateText = require("./API/translationApi");
+const listVoices = require("./API/textToSpeechApi");
 const app = express()
 
 
@@ -23,8 +24,9 @@ async function post(){
 
 }
 
-app.listen(8080, 'localhost', ()=>{
-    console.log("Server is listening on port 8080");
+app.listen(8081, 'localhost', ()=>{
+    console.log("Server is listening on port 8081");
     post();
     translateText('hello', 'ro');
+    listVoices('en');
 })
