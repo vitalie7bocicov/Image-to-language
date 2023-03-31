@@ -6,6 +6,10 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+# ide settings
+.idea
+
+
 # api-key
 
 api-key.json
