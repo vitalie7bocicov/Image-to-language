@@ -1,6 +1,8 @@
 const express = require('express')
 const getLabelsFromPhoto = require("./API/visionApi");
+const translateText = require("./API/translationApi");
 const app = express()
+
 
 
 async function post(){
@@ -24,4 +26,5 @@ async function post(){
 app.listen(8080, 'localhost', ()=>{
     console.log("Server is listening on port 8080");
     post();
+    translateText('hello', 'ro');
 })
