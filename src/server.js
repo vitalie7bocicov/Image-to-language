@@ -26,5 +26,4 @@ async function post(){
 app.listen(8080, 'localhost', ()=>{
     console.log("Server is listening on port 8080");
     post();
-    translateText('hello', 'ro');
 })
