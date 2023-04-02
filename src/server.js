@@ -6,6 +6,7 @@ const postData = require('./API/functionApi')
 const app = express()
 const cors = require('cors');
 const multer = require('multer');
+require('dotenv').config();
 const upload = multer();
 const {Storage} = require('@google-cloud/storage')
 
@@ -16,13 +17,14 @@ app.post('/what-is', upload.single('photo'), async (req, res) => {
     const photo = req.file.buffer;
     const language = req.body.language;
 
-    const labels = await getLabelsFromPhoto(photo);
-    for (let i = 0; i < labels.length; i++) {
-        labels[i] = await translateText(labels[i], language);
-    }
+    // const labels = await getLabelsFromPhoto(photo);
+    // for (let i = 0; i < labels.length; i++) {
+    //     labels[i] = await translateText(labels[i], language);
+    // }
 
+    const labels = ['cat', 'hello', 'dog'];
     uploadPhoto(req, labels);
-    res.send(labels);
+    res.send('ok');
 });
 
 
@@ -34,7 +36,7 @@ app.get('/speech', async (req, res) => {
 });
 
 const projectId = process.env.PROJECT_ID;
-const keyFilename = 'api-key.json';
+const keyFilename = 'myapi-json.json';
 
 const storage = new Storage({
     projectId,
@@ -55,18 +57,29 @@ const uploadPhoto = (req, labels) => {
                 const blobStream = blob.createWriteStream();
 
                 blobStream.on('finish', () => {
-                    const labelString = labels.join(',');
-                    console.log(req.file.originalname)
+                    const stringLabels = labels.join(',');
+                    console.log(stringLabels);
+
                     const body = {
                         filename: req.file.originalname,
-                        labels: labelString
+                        labels: stringLabels
                     }
-                    postData(body)
-                        .then((data) => {
-                            console.log(data);
+                    
+                    fetch('https://us-central1-edik-317621.cloudfunctions.net/sqlFunction', {
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(body)
+                    })
+                        .then(r => {
+                            return r.json();
                         })
-                        .catch((error) => {
-                            console.log(error);
+                        .then(r => {
+                            const msg = { message: 'Sucesfully updated' };
+
+                            console.log(msg);
+                            //res.status(200).json(msg);
                         });
 
                 });
