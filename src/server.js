@@ -5,32 +5,25 @@ const listVoices = require("./API/textToSpeechApi");
 const synthesize = require('./API/textToSpeechApi');
 const app = express()
 const cors = require('cors');
-
+const multer = require('multer');
+const upload = multer();
 
 app.use(cors());
 
-app.get('/whatIS', async (req, res) => {
-    
-    // const labels = await getLabelsFromPhoto("./cat.jfif");
-    const labels = [
-        'Cat',
-        'Felidae',
-        'Whiskers',
-        'Terrestrial animal',
-        'Close-up',
-        'Fur',
-        'Domestic short-haired cat'
-    ];
-    const language = req.query.lang;
+app.post('/what-is', upload.single('photo'), async (req, res) => {
+    console.log("RESULT")
+    const photo = req.file.buffer;
+    const language = req.body.language;
+
+    const labels = await getLabelsFromPhoto(photo);
     for (let i = 0; i < labels.length; i++) {
         labels[i] = await translateText(labels[i], language);
     }
-
     res.send(labels);
 });
 
 
-app.get('/pronunciation', async (req, res) => {
+app.get('/speech', async (req, res) => {
     console.log(req.query);
     const text = req.query.text;
     const language = req.query.lang;
