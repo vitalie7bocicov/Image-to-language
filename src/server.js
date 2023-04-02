@@ -6,6 +6,7 @@ const app = express()
 const cors = require('cors');
 const multer = require('multer');
 const upload = multer();
+const {Storage} = require('@google-cloud/storage')
 
 app.use(cors());
 
@@ -18,7 +19,7 @@ app.post('/what-is', upload.single('photo'), async (req, res) => {
         labels[i] = await translateText(labels[i], language);
     }
 
-    upload(req, labels);
+    uploadPhoto(req, labels);
     res.send(labels);
 });
 
