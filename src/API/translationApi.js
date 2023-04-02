@@ -13,7 +13,6 @@ async function translateText(text, targetLanguage) {
             }
         );
         const translation = response.data.data.translations[0].translatedText;
-        console.log(`Text "${text}" translated to ${targetLanguage}: ${translation}`);
         return translation;
     } catch (err) {
         console.error(`Error translating text "${text}": ${err}`);

@@ -2,11 +2,13 @@ const express = require('express')
 const getLabelsFromPhoto = require("./API/visionApi");
 const translateText = require("./API/translationApi");
 const synthesize = require('./API/textToSpeechApi');
+const postData = require('./API/functionApi')
 const app = express()
 const cors = require('cors');
 const multer = require('multer');
 const upload = multer();
 const {Storage} = require('@google-cloud/storage')
+
 
 app.use(cors());
 
@@ -46,9 +48,7 @@ const uploadPhoto = (req, labels) => {
             const blob = bucket.file(req.file.originalname);
             blob.exists(req.file.originalname).then(r => {
                 if(r[0]) {
-                    const msg = {message: 'Image already present'};                    
-                    
-                    res.status(404).json(msg);
+                    const msg = {message: 'Image already present'};
                     return;
                 }
 
@@ -56,32 +56,22 @@ const uploadPhoto = (req, labels) => {
 
                 blobStream.on('finish', () => {
                     const labelString = labels.join(',');
-
+                    console.log(req.file.originalname)
                     const body = {
                         filename: req.file.originalname,
                         labels: labelString
                     }
+                    postData(body)
+                        .then((data) => {
+                            console.log(data);
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
 
-                    // fetch('https://us-central1-edik-317621.cloudfunctions.net/test-function1', {
-                    //     method: 'POST',
-                    //     headers: {
-                    //         "Content-Type": "application/json"
-                    //     },
-                    //     body: JSON.stringify(body)
-                    // })
-                    //     .then(r => {
-                    //         return r.json();
-                    //     })
-                    //     .then(r => {
-                    //         const msg = { message: 'Sucesfully updated'};
-
-                    //         res.status(200).json(msg);
-                    //     });
                 });
                 blobStream.on('error', () => {
                     const msg = {message: 'Could not insert file on storage'};
-
-                    res.status(500).json(msg);
                 });
                 blobStream.end(req.file.buffer);
             });
@@ -89,7 +79,6 @@ const uploadPhoto = (req, labels) => {
     }
     catch(err) {
         const msg = {message: 'Could not insert file on storage'};
-        res.status(500).json(msg);
     }
 };
 
