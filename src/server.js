@@ -1,7 +1,6 @@
 const express = require('express')
 const getLabelsFromPhoto = require("./API/visionApi");
 const translateText = require("./API/translationApi");
-const listVoices = require("./API/textToSpeechApi");
 const synthesize = require('./API/textToSpeechApi');
 const app = express()
 const cors = require('cors');
@@ -11,7 +10,6 @@ const upload = multer();
 app.use(cors());
 
 app.post('/what-is', upload.single('photo'), async (req, res) => {
-    console.log("RESULT")
     const photo = req.file.buffer;
     const language = req.body.language;
 
@@ -24,7 +22,6 @@ app.post('/what-is', upload.single('photo'), async (req, res) => {
 
 
 app.get('/speech', async (req, res) => {
-    console.log(req.query);
     const text = req.query.text;
     const language = req.query.lang;
     const audio = await synthesize(text, language);
