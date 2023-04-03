@@ -32,6 +32,6 @@ app.get('/speech', async (req, res) => {
     res.send(audio);
 });
 
-app.listen(8081, 'localhost', ()=>{
+app.listen(8081, '0.0.0.0',()=>{
     console.log("Server is listening on port 8081");
 })
